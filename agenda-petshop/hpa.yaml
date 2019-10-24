@@ -1,0 +1,15 @@
+apiVersion: autoscaling/v1
+kind: HorizontalPodAutoscaler
+metadata:
+  name: agenda-petshop
+spec:
+  maxReplicas: 2
+  minReplicas: 1
+  scaleTargetRef:
+    apiVersion: extensions/v1beta1
+    kind: Deployment
+    name: agenda-petshop
+  targetCPUUtilizationPercentage: 60
+status:
+  currentReplicas: 0
+  desiredReplicas: 0

@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: agenda-petshop
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      run: agenda-petshop
+  template:
+    metadata:
+      labels:
+        run: agenda-petshop
+    spec:
+      containers:
+      - name: agenda-petshop
+        image: <imagem>
+        ports:
+          - containerPort: 4000
+        env:
+          - name: NODE_ENV
+            value: production
+          - name: MYSQL_USER
+            valueFrom:
+              secretKeyRef:
+                name: ap-secrets
+                key: MYSQL_USER
+          - name: MYSQL_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: ap-secrets
+                key: MYSQL_PASSWORD
+          - name: MYSQL_DATABASE
+            valueFrom:
+              secretKeyRef:
+                name: ap-secrets
+                key: MYSQL_DATABASE
+          - name: MYSQL_HOST
+            valueFrom:
+              secretKeyRef:
+                name: ap-secrets
+                key: MYSQL_HOST
+          - name: MYSQL_PORT
+            valueFrom:
+              secretKeyRef:
+                name: ap-secrets
+                key: MYSQL_PORT

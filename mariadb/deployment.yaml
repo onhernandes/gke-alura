@@ -1,0 +1,52 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mariadb
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      run: mariadb
+  template:
+    metadata:
+      labels:
+        run: mariadb
+    spec:
+      containers:
+      - name: mariadb
+        image: mariadb/server:10.3
+        ports:
+          - containerPort: 3306
+        env:
+          - name: MARIADB_ROOT_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: ap-secrets
+                key: MYSQL_ROOT_PASSWORD
+          - name: MARIADB_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: ap-secrets
+                key: MYSQL_PASSWORD
+          - name: MARIADB_USER
+            valueFrom:
+              secretKeyRef:
+                name: ap-secrets
+                key: MYSQL_USER
+          - name: MARIADB_DATABASE
+            valueFrom:
+              secretKeyRef:
+                name: ap-secrets
+                key: MYSQL_DATABASE
+        volumeMounts:
+          - mountPath: /var/lib/mysql
+            name: mariadb-data
+          - mountPath: /etc/mysql/mariadb.conf.d
+            name: mariadb-config
+      volumes:
+        - name: mariadb-config
+          configMap:
+            name: mariadb-config
+        - name: mariadb-data
+          persistentVolumeClaim:
+            claimName: mariadb-pvc
